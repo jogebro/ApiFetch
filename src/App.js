@@ -6,12 +6,13 @@ export default function App(){
   const [isLoading, setIsLoading] = useState(true);
   const [imageUrl, setImageUrl] = useState(null);
   const [error, setError] = useState(null);
+  const [cantidad, setCantidad] = useState('1');
 
   useEffect(()=>{
       if(isLoading){
         async function fetchData(){
           try {
-            const response = await fetch("https://dog.ceo/api/breeds/image/random")
+            const response = await fetch(`https://dog.ceo/api/breeds/image/random/${cantidad}`)
             if(response.ok){
               const dog = await response.json();
               setImageUrl(dog.message);
@@ -29,13 +30,16 @@ export default function App(){
   },[isLoading])
 
   const randomDog = ()=>{
-    setIsLoading(true)
+    const cant = prompt('Cuantos perros?');
+    setCantidad(cant);
+    setIsLoading(true);
   }
 
   if(isLoading){
     return(
       <div className='App'>
         <h1>Cargando . . .</h1>
+        <button onClick={randomDog}>Cargar imagenes</button>
       </div>
     )
   }
@@ -51,7 +55,11 @@ export default function App(){
 
   return(
     <div className='App'>
-        <img src={imageUrl} alt='imagen de perrito' height="500px" width="500px" style={efecto}/>
+      {
+        imageUrl.map((url, index)=>(
+          <img key={index} src={url} alt='imagen de perrito' height="500px" width="500px" style={efecto}/>
+        ))
+      }
         <button onClick={randomDog}>Cambiar imagen</button>
     </div>
   )
